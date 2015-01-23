@@ -54,14 +54,14 @@ public class AddCardActivity extends Activity {
         btnAnswerSpeak = (ImageButton) findViewById(R.id.btnAnswerSpeak);
         labelAnswer = (TextView)findViewById(R.id.txtAnswerLabel);
         if ( deck.getAnswerLocale() != null ){
-            labelAnswer.setText(new Locale(deck.getAnswerLocale()).getDisplayLanguage());
+            labelAnswer.setText(new Locale(deck.getAnswerLocale()).getDisplayName());
         }
 
         txtHintResult = (EditText) findViewById(R.id.textHint);
         btnHintSpeak = (ImageButton) findViewById(R.id.btnHintSpeak);
         labelHint = (TextView)findViewById(R.id.txtHintLabel);
         if ( deck.getHintLocale() != null ){
-            labelHint.setText(new Locale(deck.getHintLocale()).getDisplayLanguage());
+            labelHint.setText(new Locale(deck.getHintLocale()).getDisplayName());
         }
 
         btnAnswerSpeak.setOnClickListener(new View.OnClickListener() {

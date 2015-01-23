@@ -84,30 +84,27 @@ public class CardFlipActivity extends Activity
         deckProgress.setMax(currentCards.size());
 
         // Set the card currently being viewed
-        if (changeCurrentCard()) {
+        changeCurrentCard();
 
-            FrameLayout cardContainer = (FrameLayout) findViewById(R.id.cardContainer);
-            cardContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    flipCard();
-                }
-            });
-
-            if (savedInstanceState == null) {
-                cardFrontFragment = new CardFrontFragment();
-                Bundle args = new Bundle();
-                if (currentCard != null) {
-                    args.putString("FrontHint", currentCard.getHintString());
-                    cardFrontFragment.setArguments(args);
-                    getFragmentManager()
-                            .beginTransaction()
-                            .add(R.id.cardContainer, cardFrontFragment)
-                            .commit();
-                }
-            } else {
-                mShowingBack = (getFragmentManager().getBackStackEntryCount() > 0);
+        FrameLayout cardContainer = (FrameLayout)findViewById(R.id.cardContainer);
+        cardContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flipCard();
             }
+        });
+
+        if (savedInstanceState == null) {
+            cardFrontFragment = new CardFrontFragment();
+            Bundle args = new Bundle();
+            args.putString("FrontHint", currentCard.getHintString());
+            cardFrontFragment.setArguments(args);
+            getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.cardContainer, cardFrontFragment)
+                    .commit();
+        } else {
+            mShowingBack = (getFragmentManager().getBackStackEntryCount() > 0);
         }
 
         // Monitor back stack changes to ensure the action bar shows the appropriate
