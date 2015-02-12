@@ -84,7 +84,7 @@ public class CardFlipActivity extends Activity
         deckProgress.setMax(currentCards.size());
 
         // Set the card currently being viewed
-        if (changeCurrentCard()) {
+        if (changeCurrentCard(false)) {
 
             FrameLayout cardContainer = (FrameLayout) findViewById(R.id.cardContainer);
             cardContainer.setOnClickListener(new View.OnClickListener() {
@@ -115,11 +115,13 @@ public class CardFlipActivity extends Activity
         getFragmentManager().addOnBackStackChangedListener(this);
     }
 
-    private boolean changeCurrentCard(){
+    private boolean changeCurrentCard(boolean correctAnswer){
         if ( currentCard != null && currentCards != null ){
-            ProgressBar deckProgress = (ProgressBar)findViewById(R.id.deckProgressBar);
-            deckProgress.incrementProgressBy(1);
-            currentCards.remove(currentCard);
+            if (correctAnswer) {
+                ProgressBar deckProgress = (ProgressBar) findViewById(R.id.deckProgressBar);
+                deckProgress.incrementProgressBy(1);
+                currentCards.remove(currentCard);
+            }
             flipCard();
         }
         if ( currentCards != null && currentCards.size() > 0 ){
@@ -137,16 +139,14 @@ public class CardFlipActivity extends Activity
 
         // Add either a "photo" or "finish" button to the action bar, depending on which page
         // is currently selected.
-        if ( mShowingBack ){
+        if (mShowingBack) {
             MenuItem correctItem = menu.add(Menu.NONE, R.id.action_correct, Menu.NONE, mShowingBack ? "Hint" : "Answer");
-            correctItem.setIcon(R.drawable.ic_launcher);
+            correctItem.setIcon(R.drawable.checkmark_dw);
             correctItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            if ( currentCards.size() > 1 ) {
-                MenuItem wrongItem = menu.add(Menu.NONE, R.id.action_wrong, Menu.NONE, mShowingBack ? "Hint" : "Answer");
-                wrongItem.setIcon(R.drawable.card_quiz);
-                wrongItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            }
+            MenuItem wrongItem = menu.add(Menu.NONE, R.id.action_wrong, Menu.NONE, mShowingBack ? "Hint" : "Answer");
+            wrongItem.setIcon(R.drawable.x_dw);
+            wrongItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
         return true;
     }
@@ -155,7 +155,27 @@ public class CardFlipActivity extends Activity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_correct:
-                boolean cardsLeft = changeCurrentCard();
+                boolean cardsLeft = changeCurrentCard(true);
+                if ( cardsLeft ) {
+                    cardFrontFragment = new CardFrontFragment();
+                    Bundle args = new Bundle();
+                    args.putString("FrontHint", currentCard.getHintString());
+                    cardFrontFragment.setArguments(args);
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.cardContainer, cardFrontFragment)
+                            .commit();
+                    return true;
+                } else {
+                    Intent deckMainIntent = new Intent(CardFlipActivity.this, DeckMainActivity.class);
+
+                    // Get the deck selected and attach
+                    deckMainIntent.putExtra("SelectedDeck", getIntent().getParcelableExtra("SelectedDeck"));
+                    startActivity(deckMainIntent);
+                    Toast.makeText(getApplicationContext(), "Congrats! Deck finished!", Toast.LENGTH_LONG).show();
+                }
+            case R.id.action_wrong:
+                cardsLeft = changeCurrentCard(false);
                 if ( cardsLeft ) {
                     cardFrontFragment = new CardFrontFragment();
                     Bundle args = new Bundle();

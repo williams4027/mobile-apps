@@ -95,7 +95,11 @@ public class HomeActivity extends Activity {
 
                 List<LocaleSpinnerObject> spinnerList = new ArrayList<LocaleSpinnerObject>();
                 LocaleSpinnerObject defaultLocale = null;
+
                 for ( Locale tempLocale : Locale.getAvailableLocales() ){
+                    System.out.println(tempLocale.getDisplayLanguage());
+                    System.out.println(tempLocale.getDisplayName());
+                    System.out.println(tempLocale.getLanguage());
                     LocaleSpinnerObject tempObject = new LocaleSpinnerObject(tempLocale.getDisplayName(), tempLocale);
                     if ( tempLocale.equals(Locale.US)){
                         defaultLocale = tempObject;

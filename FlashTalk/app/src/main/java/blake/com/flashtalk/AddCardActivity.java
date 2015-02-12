@@ -15,11 +15,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import javax.xml.datatype.Duration;
 
 import blake.com.flashtalk.dao.Card;
 import blake.com.flashtalk.dao.DatabaseHandler;
@@ -54,14 +57,16 @@ public class AddCardActivity extends Activity {
         btnAnswerSpeak = (ImageButton) findViewById(R.id.btnAnswerSpeak);
         labelAnswer = (TextView)findViewById(R.id.txtAnswerLabel);
         if ( deck.getAnswerLocale() != null ){
-            labelAnswer.setText(new Locale(deck.getAnswerLocale()).getDisplayLanguage());
+            String displayAnswerLang = LocaleUtils.toLocale(deck.getAnswerLocale()).getDisplayName();
+            labelAnswer.setText("Answer: " + displayAnswerLang);
         }
 
         txtHintResult = (EditText) findViewById(R.id.textHint);
         btnHintSpeak = (ImageButton) findViewById(R.id.btnHintSpeak);
         labelHint = (TextView)findViewById(R.id.txtHintLabel);
         if ( deck.getHintLocale() != null ){
-            labelHint.setText(new Locale(deck.getHintLocale()).getDisplayLanguage());
+            String displayHintLabel = LocaleUtils.toLocale(deck.getHintLocale()).getDisplayName();
+            labelHint.setText("Hint: " + displayHintLabel);
         }
 
         btnAnswerSpeak.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +94,10 @@ public class AddCardActivity extends Activity {
                     DatabaseHandler db = new DatabaseHandler(activityContext);
                     db.addCard(newCard);
                     db.close();
+
+                    Toast.makeText(getApplicationContext(), "Card Saved", Toast.LENGTH_SHORT).show();
+                    txtAnswerResult.setText(null);
+                    txtHintResult.setText(null);
                 }
             }
         });
