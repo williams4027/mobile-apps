@@ -2,9 +2,6 @@ package blake.com.flashtalk;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-
 
 public class AddDeckActivity extends Activity {
 
@@ -15,12 +12,12 @@ public class AddDeckActivity extends Activity {
     }
 
 
-    @Override
+/*    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.add_deck, menu);
         return true;
-    }
+    }*/
 
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {

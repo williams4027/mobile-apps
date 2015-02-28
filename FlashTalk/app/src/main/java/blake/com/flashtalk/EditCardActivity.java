@@ -1,14 +1,14 @@
 package blake.com.flashtalk;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,20 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.LocaleUtils;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
-import javax.xml.datatype.Duration;
 
 import blake.com.flashtalk.dao.Card;
 import blake.com.flashtalk.dao.DatabaseHandler;
 import blake.com.flashtalk.dao.Deck;
 
 
-public class AddCardActivity extends Activity {
+public class EditCardActivity extends Activity {
 
     private final Context activityContext = this;
 
@@ -45,11 +41,12 @@ public class AddCardActivity extends Activity {
     private TextView labelHint;
 
     private Deck deck;
+    private Card selectedCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_card);
+        setContentView(R.layout.activity_edit_card);
 
         deck = getIntent().getParcelableExtra("SelectedDeck");
 
@@ -85,20 +82,71 @@ public class AddCardActivity extends Activity {
             }
         });
 
-        ImageButton btnCreateCard = (ImageButton)findViewById(R.id.btnCreateCard);
+        // We are editing a card rather than creating a new one so fill values
+        if (getIntent().getParcelableExtra("SelectedCard") != null){
+            selectedCard = getIntent().getParcelableExtra("SelectedCard");
+            txtAnswerResult.setText(selectedCard.getAnswerString());
+            txtHintResult.setText(selectedCard.getHintString());
+        }
+
+        ImageButton btnCreateCard = (ImageButton)findViewById(R.id.btnSaveCard);
         btnCreateCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ( txtAnswerResult.getText() != null && txtHintResult.getText() != null) {
-                    Card newCard = new Card(deck.getId(), txtAnswerResult.getText().toString(), txtHintResult.getText().toString());
+                if ( txtAnswerResult.getText() != null && !txtAnswerResult.getText().toString().isEmpty()
+                        && txtHintResult.getText() != null && !txtHintResult.getText().toString().isEmpty()) {
                     DatabaseHandler db = new DatabaseHandler(activityContext);
-                    db.addCard(newCard);
+                    // Remove old card if updating
+                    if (selectedCard != null){
+                        db.deleteCard(selectedCard);
+                    }
+                    selectedCard = new Card(deck.getId(), txtAnswerResult.getText().toString(), txtHintResult.getText().toString());
+                    db.addCard(selectedCard);
                     db.close();
 
-                    Toast.makeText(getApplicationContext(), "Card Saved", Toast.LENGTH_SHORT).show();
-                    txtAnswerResult.setText(null);
-                    txtHintResult.setText(null);
+//                    Toast.makeText(getApplicationContext(), "Card Saved", Toast.LENGTH_SHORT).show();
+//                    txtAnswerResult.setText(null);
+//                    txtHintResult.setText(null);
                 }
+                finish();
+            }
+        });
+
+        ImageButton btnDeleteCard = (ImageButton)findViewById(R.id.btnDeleteCard);
+        btnDeleteCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(EditCardActivity.this);
+
+                // Setting Dialog Title
+                alertDialog.setTitle("Confirm Delete...");
+
+                // Setting Dialog Message
+                alertDialog.setMessage("Are you sure you want delete this card?");
+
+                // Setting Positive "Yes" Button
+                alertDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int which) {
+                        if ( selectedCard != null && selectedCard.getId() != 0) {
+                            DatabaseHandler db = new DatabaseHandler(activityContext);
+                            db.deleteCard(selectedCard);
+                            db.close();
+                            finish();
+                        }
+                        finish();
+                    }
+                });
+
+                // Setting Negative "NO" Button
+                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                // Showing Alert Message
+                alertDialog.show();
             }
         });
 
@@ -135,13 +183,6 @@ public class AddCardActivity extends Activity {
                     Toast.LENGTH_SHORT);
             t.show();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
     }
 
 //    @Override

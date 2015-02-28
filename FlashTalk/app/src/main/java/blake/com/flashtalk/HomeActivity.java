@@ -39,33 +39,9 @@ public class HomeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.deck_list);
 
-        // Populate the displayed user decks
-        DatabaseHandler db = new DatabaseHandler(activityContext);
-        currentDecks = db.getAllDecks();
-        db.close();
-        Log.d("Deck Count: ", String.valueOf(currentDecks.size()));
-
-        final ListView deckListView = (ListView)findViewById(R.id.deckList);
-        deckAdapter = new ArrayAdapter<Deck>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, currentDecks);
-        deckListView.setAdapter(deckAdapter);
-        registerForContextMenu(deckListView);
-
-        // Set click listener
-        deckListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent deckMainIntent = new Intent(HomeActivity.this, DeckMainActivity.class);
-
-                // Get the deck selected and attach
-                int itemPosition = position;
-                Deck selectedDeck = (Deck) deckListView.getItemAtPosition(itemPosition);
-                deckMainIntent.putExtra("SelectedDeck", selectedDeck);
-                startActivity(deckMainIntent);
-            }
-        });
+        updateDeckList();
 
         // Reading all contacts
         Log.d("DEBUG: HomeActivity", "Logging Decks..");
@@ -149,12 +125,40 @@ public class HomeActivity extends Activity {
         });
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
+    protected void onResume() {
+        super.onResume();
+        updateDeckList();
+    }
+
+    private void updateDeckList() {
+        // Populate the displayed user decks
+        DatabaseHandler db = new DatabaseHandler(activityContext);
+        currentDecks = db.getAllDecks();
+        db.close();
+        Log.d("Deck Count: ", String.valueOf(currentDecks.size()));
+
+        final ListView deckListView = (ListView)findViewById(R.id.deckList);
+        deckAdapter = new ArrayAdapter<Deck>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, currentDecks);
+        deckListView.setAdapter(deckAdapter);
+        registerForContextMenu(deckListView);
+
+        // Set click listener
+        deckListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent deckMainIntent = new Intent(HomeActivity.this, DeckMainActivity.class);
+
+                // Get the deck selected and attach
+                int itemPosition = position;
+                Deck selectedDeck = (Deck) deckListView.getItemAtPosition(itemPosition);
+                deckMainIntent.putExtra("SelectedDeck", selectedDeck);
+                startActivity(deckMainIntent);
+            }
+        });
+
+        deckAdapter.notifyDataSetChanged();
     }
 
     @Override

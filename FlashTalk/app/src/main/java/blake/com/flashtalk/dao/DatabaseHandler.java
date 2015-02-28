@@ -174,6 +174,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    // Deleting single card
+    public void deleteCard(Card card) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CARDS, CARD_KEY_ID + " = ?",
+                new String[] { String.valueOf(card.getId()) });
+        db.close();
+    }
+
     // Getting single card
     public Card getCard(int id) {
         SQLiteDatabase db = this.getReadableDatabase();

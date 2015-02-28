@@ -1,0 +1,151 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="?android:attr/actionBarSize"
+    android:background="@drawable/flashtalk_flats_backgrounds_04"
+    android:gravity="center"
+    android:weightSum="3">
+
+    <LinearLayout
+        android:id="@+id/inputLayout"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_alignParentTop="true">
+
+        <RelativeLayout
+            android:id="@+id/answerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/txtAnswerLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:text="AnswerLabel"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <ScrollView
+                android:id="@+id/textAnswerView"
+                android:layout_below="@id/txtAnswerLabel"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/flashtalk_elements_card">
+
+                <EditText
+                    android:id="@+id/textAnswer"
+                    android:inputType="textAutoComplete|textMultiLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:gravity="left|top"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"/>
+
+            </ScrollView>
+
+            <ImageButton
+                android:id="@+id/btnAnswerSpeak"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_below="@+id/textAnswerView"
+                android:src="@drawable/flashtalk_elements_record"
+                android:scaleType="centerInside"
+                android:background="@android:color/transparent"
+                android:layout_centerHorizontal="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/hintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/txtHintLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:text="HintLabel"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <ScrollView
+                android:id="@+id/textHintView"
+                android:layout_below="@id/txtHintLabel"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/flashtalk_elements_card">
+
+                <EditText
+                    android:id="@+id/textHint"
+                    android:inputType="textAutoComplete|textMultiLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:gravity="left|top"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"/>
+
+            </ScrollView>
+
+            <ImageButton
+                android:id="@+id/btnHintSpeak"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_below="@+id/textHintView"
+                android:src="@drawable/flashtalk_elements_record"
+                android:scaleType="centerInside"
+                android:background="@android:color/transparent"
+                android:layout_centerHorizontal="true" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/editCardButtonPanel"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_below="@+id/inputLayout"
+        android:gravity="center"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="false"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="65dp"
+            android:id="@+id/btnSaveCard"
+            android:layout_weight="1"
+            android:src="@drawable/flashtalk_elements_check"
+            android:scaleType="centerInside"
+            android:background="@android:color/transparent" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="65dp"
+            android:id="@+id/btnDeleteCard"
+            android:layout_weight="1"
+            android:src="@drawable/flashtalk_elements_x"
+            android:scaleType="centerInside"
+            android:background="@android:color/transparent" />
+
+    </LinearLayout>
+
+</RelativeLayout>
