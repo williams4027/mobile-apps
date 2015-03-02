@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/list_view_margin"
+    android:paddingRight="@dimen/list_view_margin"
+    android:paddingTop="@dimen/list_view_margin"
+    android:paddingBottom="@dimen/list_view_margin">
+
+    <TextView
+        android:id="@+id/statCardAnswer"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:text="TEST"
+        android:gravity="left|center_vertical"/>
+    <TextView
+        android:id="@+id/statCardPercentage"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:text="97%"
+        android:gravity="right|center_vertical" />
+</LinearLayout>

@@ -22,16 +22,20 @@
             android:label="@string/app_name" >
         </activity>
         <activity
+            android:name=".DeckMainActivity"
+            android:label="@string/title_activity_deck_main" >
+        </activity>
+        <activity
+            android:name=".DeckStatsActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
             android:name=".EditCardActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".AddDeckActivity"
             android:label="@string/title_activity_add_deck" >
-        </activity>
-        <activity
-            android:name=".DeckMainActivity"
-            android:label="@string/title_activity_deck_main" >
         </activity>
         <activity
             android:name=".CardFlipActivity"

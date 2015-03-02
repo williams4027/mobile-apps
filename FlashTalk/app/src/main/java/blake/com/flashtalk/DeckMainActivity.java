@@ -26,15 +26,15 @@ public class DeckMainActivity extends Activity {
 
     private final Context activityContext = this;
 
-    private ImageButton btnAddCards;
+    private ImageButton deckStats;
     private ImageButton deleteDeckButton;
+
     private ImageButton btnQuiz;
 
     private Deck selectedDeck;
-
     private List<Card> currentCards = new ArrayList<Card>();
-    private ArrayAdapter<Card> cardAdapter;
 
+    private ArrayAdapter<Card> cardAdapter;
     private Card createCardPlaceholder;
 
     @Override
@@ -63,6 +63,17 @@ public class DeckMainActivity extends Activity {
 //                startActivity(addCardIntent);
 //            }
 //        });
+
+        deckStats = (ImageButton)findViewById(R.id.btnDeckStats);
+        deckStats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent statsIntent = new Intent(DeckMainActivity.this, DeckStatsActivity.class);
+                // Get the deck selected and attach
+                statsIntent.putExtra("SelectedDeck", selectedDeck);
+                startActivity(statsIntent);
+            }
+        });
 
         deleteDeckButton = (ImageButton)findViewById(R.id.btnDeleteDeck);
         deleteDeckButton.setOnClickListener(new View.OnClickListener() {

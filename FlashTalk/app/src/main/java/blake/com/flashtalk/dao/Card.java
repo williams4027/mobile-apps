@@ -14,6 +14,8 @@ public class Card implements Parcelable {
 
     CardStatistic cardStatistic;
 
+    private final int MAX_DISPLAY_CHAR = 20;
+
     public Card(){}
 
     public Card(long id, long deckId, String answerString, String hintString){
@@ -114,8 +116,18 @@ public class Card implements Parcelable {
         }
     };
 
+    public String getDisplayAnswer(){
+        String displayAnswer = "";
+        if (this.getAnswerString().length() > MAX_DISPLAY_CHAR){
+            displayAnswer = this.getAnswerString().substring(0, 14) + "...";
+        } else {
+            displayAnswer = this.getAnswerString();
+        }
+        return displayAnswer;
+    }
+
     @Override
     public String toString() {
-        return this._answerString;
+        return getDisplayAnswer();
     }
 }
