@@ -12,19 +12,20 @@ public class Card implements Parcelable {
     String _answerString;
     String _hintString;
 
+    CardStatistic cardStatistic;
+
     public Card(){}
 
     public Card(long id, long deckId, String answerString, String hintString){
-        this._id = id;
-        this._deckId = deckId;
-        this._answerString = answerString;
-        this._hintString = hintString;
+        this(deckId, answerString, hintString);
+        getCardStatistic();
     }
 
     public Card(long deckId, String answerString, String hintString){
         this._deckId = deckId;
         this._answerString = answerString;
         this._hintString = hintString;
+        getCardStatistic();
     }
 
     public Card(Parcel deckParcel){
@@ -34,6 +35,7 @@ public class Card implements Parcelable {
         this._deckId= Long.parseLong(parcelData[1]);
         this._answerString = parcelData[2];
         this._hintString = parcelData[3];
+        getCardStatistic();
     }
 
     public long getId() {
@@ -66,6 +68,28 @@ public class Card implements Parcelable {
 
     public void setHintString(String _hintString) {
         this._hintString = _hintString;
+    }
+
+    public CardStatistic getCardStatistic() {
+        if (cardStatistic == null){
+            DatabaseHandler db = DatabaseHandler.getInstance(null);
+            this.cardStatistic = db.getCardStatistic(this.getId());
+            db.close();
+            if (this.cardStatistic == null){
+                this.cardStatistic = new CardStatistic(this.getId());
+            }
+        }
+        return cardStatistic;
+    }
+
+    public void updateCardStatistic(){
+        DatabaseHandler db = DatabaseHandler.getInstance(null);
+        if (getCardStatistic().getId() == 0){
+            db.addCardStatistic(this.cardStatistic);
+        } else {
+            db.updateCardStatistic(this.cardStatistic);
+        }
+        db.close();
     }
 
     @Override

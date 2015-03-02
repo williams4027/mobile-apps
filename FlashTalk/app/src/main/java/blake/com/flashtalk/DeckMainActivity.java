@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,14 +74,14 @@ public class DeckMainActivity extends Activity {
                 alertDialog.setTitle("Confirm Delete...");
 
                 // Setting Dialog Message
-                alertDialog.setMessage("Are you sure you want delete this deck?");
+                alertDialog.setMessage("Are you sure you want delete this deck and all the associated cards?");
 
                 // Setting Positive "Yes" Button
                 alertDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int which) {
                         Log.d("DEBUG","Delete Selected");
                         // Get the deck selected and delete
-                        DatabaseHandler db = new DatabaseHandler(activityContext);
+                        DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
                         db.deleteDeck(selectedDeck);
                         db.close();
                         finish();
@@ -103,10 +104,14 @@ public class DeckMainActivity extends Activity {
         btnQuiz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent quizIntent = new Intent(DeckMainActivity.this, CardFlipActivity.class);
-                // Get the deck selected and attach
-                quizIntent.putExtra("SelectedDeck", selectedDeck);
-                startActivity(quizIntent);
+                if (currentCards.size() > 1) {
+                    Intent quizIntent = new Intent(DeckMainActivity.this, CardFlipActivity.class);
+                    // Get the deck selected and attach
+                    quizIntent.putExtra("SelectedDeck", selectedDeck);
+                    startActivity(quizIntent);
+                } else {
+                    Toast.makeText(activityContext, "Please create a card before studying.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 //
@@ -130,13 +135,11 @@ public class DeckMainActivity extends Activity {
 
     private void updateCardList() {
         // Populate the displayed user decks
-        DatabaseHandler db = new DatabaseHandler(activityContext);
         createCardPlaceholder = new Card();
         createCardPlaceholder.setAnswerString("Create a New Card");
         currentCards = new ArrayList<Card>();
         currentCards.add(createCardPlaceholder);
-        currentCards.addAll(db.getAllDeckCards(selectedDeck.getId()));
-        db.close();
+        currentCards.addAll(selectedDeck.getCards());
         Log.d("Card Count: ", String.valueOf(currentCards.size()));
 
         // Populate the card list

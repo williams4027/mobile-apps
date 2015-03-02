@@ -13,10 +13,12 @@ import java.util.List;
  * Created by Blake on 8/25/2014.
  */
 public class DatabaseHandler extends SQLiteOpenHelper {
+    private static DatabaseHandler instance = null;
+    private Context context;
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Database Name
     private static final String DATABASE_NAME = "FlashTalk";
@@ -24,6 +26,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Table Names
     private static final String TABLE_DECKS = "decks";
     private static final String TABLE_CARDS = "cards";
+    private static final String TABLE_CARD_STATISTICS = "card_stats";
 
     // Deck Table Columns names
     private static final String DECK_KEY_ID = "id";
@@ -37,8 +40,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String CARD_KEY_ANSWER_STRING = "answerString";
     private static final String CARD_KEY_HINT_STRING = "hintString";
 
-    public DatabaseHandler(Context context) {
+    // Card Table Columns names
+    private static final String CARD_STAT_KEY_ID = "id";
+    private static final String CARD_STAT_CARD_ID = "cardId";
+    private static final String CARD_STAT_FLAGGED = "isFlagged";
+    private static final String CARD_STAT_CORRECT_COUNT = "correctCount";
+    private static final String CARD_STAT_INCORRECT_COUNT = "incorrectCount";
+    private static final String CARD_STAT_SKIP_COUNT = "skipCount";
+
+    public static DatabaseHandler getInstance(Context context) {
+        if (instance == null){
+            instance = new DatabaseHandler(context);
+        }
+        return instance;
+    }
+
+    private DatabaseHandler(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -54,6 +73,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + CARD_KEY_ANSWER_STRING + " TEXT,"
                 + CARD_KEY_HINT_STRING + " TEXT" + ")";
         sqLiteDatabase.execSQL(CREATE_CARD_TABLE);
+
+        String CREATE_CARD_STATS_TABLE = "CREATE TABLE " + TABLE_CARD_STATISTICS + "("
+                + CARD_STAT_KEY_ID + " INTEGER PRIMARY KEY," + CARD_STAT_CARD_ID + " INTEGER,"
+                + CARD_STAT_FLAGGED + " INTEGER,"
+                + CARD_STAT_CORRECT_COUNT + " INTEGER,"
+                + CARD_STAT_INCORRECT_COUNT + " INTEGER,"
+                + CARD_STAT_SKIP_COUNT + " INTEGER" + ")";
+        sqLiteDatabase.execSQL(CREATE_CARD_STATS_TABLE);
     }
 
     @Override
@@ -61,6 +88,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Drop older table if existed
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_DECKS);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CARDS);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CARD_STATISTICS);
 
         // Create tables again
         onCreate(sqLiteDatabase);
@@ -85,7 +113,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     // Getting single deck
-    public Deck getDeck(int id) {
+    public Deck getDeck(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_DECKS, new String[] {DECK_KEY_ID,
@@ -174,6 +202,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    // Update single card
+    public void updateCard(Card card) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CARD_KEY_ID, card.getId());
+        values.put(CARD_DECK_ID, card.getDeckId());
+        values.put(CARD_KEY_ANSWER_STRING, card.getAnswerString());
+        values.put(CARD_KEY_HINT_STRING, card.getHintString());
+
+        db.update(TABLE_CARDS, values, CARD_KEY_ID + " = ?",
+                new String[] { String.valueOf(card.getId()) });
+
+        db.close();
+    }
+
     // Deleting single card
     public void deleteCard(Card card) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -183,7 +227,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     // Getting single card
-    public Card getCard(int id) {
+    public Card getCard(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_CARDS, new String[] {CARD_KEY_ID,
@@ -219,6 +263,63 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         return cardList;
+    }
+
+    // Adding new card statistic
+    public void addCardStatistic(CardStatistic cardStatistic) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CARD_STAT_CARD_ID, cardStatistic.get_cardId());
+        values.put(CARD_STAT_FLAGGED, cardStatistic.is_isFlagged());
+        values.put(CARD_STAT_CORRECT_COUNT, cardStatistic.get_correctCount());
+        values.put(CARD_STAT_INCORRECT_COUNT, cardStatistic.get_incorrectCount());
+        values.put(CARD_STAT_SKIP_COUNT, cardStatistic.get_skipCount());
+
+        // Inserting Row
+        db.insert(TABLE_CARD_STATISTICS, null, values);
+        db.close(); // Closing database connection
+    }
+
+    // Update single card statistic
+    public void updateCardStatistic(CardStatistic cardStatistic) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CARD_STAT_KEY_ID, cardStatistic.getId());
+        values.put(CARD_STAT_CARD_ID, cardStatistic.get_cardId());
+        values.put(CARD_STAT_FLAGGED, cardStatistic.is_isFlagged());
+        values.put(CARD_STAT_CORRECT_COUNT, cardStatistic.get_correctCount());
+        values.put(CARD_STAT_INCORRECT_COUNT, cardStatistic.get_incorrectCount());
+        values.put(CARD_STAT_SKIP_COUNT, cardStatistic.get_skipCount());
+
+        db.update(TABLE_CARD_STATISTICS, values, CARD_STAT_KEY_ID + " = ?",
+                new String[] { String.valueOf(cardStatistic.getId()) });
+
+        db.close();
+    }
+
+    // Deleting single card statistic
+    public void deleteCardStatistic(CardStatistic cardStatistic) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CARD_STATISTICS, CARD_STAT_KEY_ID + " = ?",
+                new String[] { String.valueOf(cardStatistic.getId()) });
+        db.close();
+    }
+
+    // Getting single card
+    public CardStatistic getCardStatistic(long id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_CARD_STATISTICS, new String[] {CARD_STAT_KEY_ID, CARD_STAT_CARD_ID,
+                        CARD_STAT_FLAGGED, CARD_STAT_CORRECT_COUNT, CARD_STAT_INCORRECT_COUNT, CARD_STAT_SKIP_COUNT}, CARD_KEY_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        CardStatistic cardStatistic = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            cardStatistic = new CardStatistic(Long.parseLong(cursor.getString(0)), Long.parseLong(cursor.getString(1)),
+                    Boolean.valueOf(cursor.getString(2)), Long.parseLong(cursor.getString(3)), Long.parseLong(cursor.getString(4)), Long.parseLong(cursor.getString(5)));
+        }
+        return cardStatistic;
     }
 
     // Getting All Deck Cards

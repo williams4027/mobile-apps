@@ -23,7 +23,7 @@
         used for programmatically-instantiated action bar items, they
         are defined here.
     -->
-    <item type="id" name="action_correct" />
+    <item type="id" name="correctAnswerButton" />
     <item type="id" name="action_wrong" />
     <item type="id" name="action_flip" />
 

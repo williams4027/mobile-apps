@@ -95,7 +95,7 @@ public class EditCardActivity extends Activity {
             public void onClick(View view) {
                 if ( txtAnswerResult.getText() != null && !txtAnswerResult.getText().toString().isEmpty()
                         && txtHintResult.getText() != null && !txtHintResult.getText().toString().isEmpty()) {
-                    DatabaseHandler db = new DatabaseHandler(activityContext);
+                    DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
                     // Remove old card if updating
                     if (selectedCard != null){
                         db.deleteCard(selectedCard);
@@ -129,7 +129,7 @@ public class EditCardActivity extends Activity {
                 alertDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int which) {
                         if ( selectedCard != null && selectedCard.getId() != 0) {
-                            DatabaseHandler db = new DatabaseHandler(activityContext);
+                            DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
                             db.deleteCard(selectedCard);
                             db.close();
                             finish();
@@ -151,7 +151,7 @@ public class EditCardActivity extends Activity {
         });
 
         // Reading all contacts
-        DatabaseHandler db = new DatabaseHandler(activityContext);
+        DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
         List<Card> currentCards = db.getAllCards();
         db.close();
         Log.d("Reading: ", "Reading all contacts..");

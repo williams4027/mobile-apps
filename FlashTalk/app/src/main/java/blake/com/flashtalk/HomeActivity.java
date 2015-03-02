@@ -111,7 +111,7 @@ public class HomeActivity extends Activity {
                             final Deck newDeck = new Deck(txtNewDeckName.getText().toString(),
                                     ((LocaleSpinnerObject) spinnerAnswerLocale.getSelectedItem()).getValue().toString(),
                                     ((LocaleSpinnerObject) spinnerHintLocale.getSelectedItem()).getValue().toString());
-                            DatabaseHandler db = new DatabaseHandler(activityContext);
+                            DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
                             db.addDeck(newDeck);
                             currentDecks.add(newDeck);
                             deckAdapter.notifyDataSetChanged();
@@ -133,7 +133,7 @@ public class HomeActivity extends Activity {
 
     private void updateDeckList() {
         // Populate the displayed user decks
-        DatabaseHandler db = new DatabaseHandler(activityContext);
+        DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
         currentDecks = db.getAllDecks();
         db.close();
         Log.d("Deck Count: ", String.valueOf(currentDecks.size()));
@@ -185,7 +185,7 @@ public class HomeActivity extends Activity {
                 Log.d("DEBUG","Delete Selected");
                 // Get the deck selected and delete
                 Deck selectedDeck = currentDecks.get(info.position);
-                DatabaseHandler db = new DatabaseHandler(activityContext);
+                DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
                 db.deleteDeck(selectedDeck);
                 currentDecks.remove(selectedDeck);
                 deckAdapter.notifyDataSetChanged();

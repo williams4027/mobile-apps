@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +67,8 @@ public class CardFlipActivity extends Activity
     private Card currentCard;
 
     private CardFrontFragment cardFrontFragment;
+    private ImageButton correctButton;
+    private ImageButton incorrectButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +77,7 @@ public class CardFlipActivity extends Activity
 
         // Grab all the cards to test
         Deck selectedDeck = getIntent().getParcelableExtra("SelectedDeck");
-        DatabaseHandler db = new DatabaseHandler(activityContext);
+        DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
         db.getAllCards();
         currentCards = db.getAllDeckCards(selectedDeck.getId());
         db.close();
@@ -109,9 +112,55 @@ public class CardFlipActivity extends Activity
                 mShowingBack = (getFragmentManager().getBackStackEntryCount() > 0);
             }
         }
+        
+        // Create the correct button
+        correctButton = (ImageButton) findViewById(R.id.correctAnswerButton);
+        correctButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long correctCount = currentCard.getCardStatistic().get_correctCount();
+                currentCard.getCardStatistic().set_correctCount(correctCount + 1);
+                currentCard.updateCardStatistic();
+                if ( changeCurrentCard(true) ) {
+                    cardFrontFragment = new CardFrontFragment();
+                    Bundle args = new Bundle();
+                    args.putString("FrontHint", currentCard.getHintString());
+                    cardFrontFragment.setArguments(args);
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.cardContainer, cardFrontFragment)
+                            .commit();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Congrats! Deck finished!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        });
 
-        // Monitor back stack changes to ensure the action bar shows the appropriate
-        // button (either "photo" or "info").
+        // Create the incorrect button
+        incorrectButton = (ImageButton) findViewById(R.id.incorrectAnswerButton);
+        incorrectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long incorrectCount = currentCard.getCardStatistic().get_incorrectCount();
+                currentCard.getCardStatistic().set_incorrectCount(incorrectCount + 1);
+                currentCard.updateCardStatistic();
+                if ( changeCurrentCard(false) ) {
+                    cardFrontFragment = new CardFrontFragment();
+                    Bundle args = new Bundle();
+                    args.putString("FrontHint", currentCard.getHintString());
+                    cardFrontFragment.setArguments(args);
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.cardContainer, cardFrontFragment)
+                            .commit();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Congrats! Deck finished!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        });
+        
         getFragmentManager().addOnBackStackChangedListener(this);
     }
 
@@ -122,6 +171,7 @@ public class CardFlipActivity extends Activity
                 deckProgress.incrementProgressBy(1);
                 currentCards.remove(currentCard);
             }
+            getFragmentManager().beginTransaction().remove(cardFrontFragment).commit();
             flipCard();
         }
         if ( currentCards != null && currentCards.size() > 0 ){
@@ -133,14 +183,14 @@ public class CardFlipActivity extends Activity
         return false;
     }
 
-    @Override
+ /*   @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
         // Add either a "photo" or "finish" button to the action bar, depending on which page
         // is currently selected.
         if (mShowingBack) {
-            MenuItem correctItem = menu.add(Menu.NONE, R.id.action_correct, Menu.NONE, mShowingBack ? "Hint" : "Answer");
+            MenuItem correctItem = menu.add(Menu.NONE, R.id.correctAnswerButton, Menu.NONE, mShowingBack ? "Hint" : "Answer");
             correctItem.setIcon(R.drawable.checkmark_dw);
             correctItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
@@ -154,7 +204,10 @@ public class CardFlipActivity extends Activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_correct:
+            case R.id.correctAnswerButton:
+                long correctCount = currentCard.getCardStatistic().get_correctCount();
+                currentCard.getCardStatistic().set_correctCount(correctCount + 1);
+                currentCard.updateCardStatistic();
                 boolean cardsLeft = changeCurrentCard(true);
                 if ( cardsLeft ) {
                     cardFrontFragment = new CardFrontFragment();
@@ -172,9 +225,14 @@ public class CardFlipActivity extends Activity
                     // Get the deck selected and attach
                     deckMainIntent.putExtra("SelectedDeck", getIntent().getParcelableExtra("SelectedDeck"));
                     startActivity(deckMainIntent);
-                    Toast.makeText(getApplicationContext(), "Congrats! Deck finished!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Congrats! Deck finished!", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
+                break;
             case R.id.action_wrong:
+                long incorrectCount = currentCard.getCardStatistic().get_incorrectCount();
+                currentCard.getCardStatistic().set_incorrectCount(incorrectCount + 1);
+                currentCard.updateCardStatistic();
                 cardsLeft = changeCurrentCard(false);
                 if ( cardsLeft ) {
                     cardFrontFragment = new CardFrontFragment();
@@ -192,11 +250,13 @@ public class CardFlipActivity extends Activity
                     // Get the deck selected and attach
                     deckMainIntent.putExtra("SelectedDeck", getIntent().getParcelableExtra("SelectedDeck"));
                     startActivity(deckMainIntent);
-                    Toast.makeText(getApplicationContext(), "Congrats! Deck finished!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Congrats! Deck finished!", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
+                break;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     private void flipCard() {
         if (mShowingBack) {
@@ -205,7 +265,6 @@ public class CardFlipActivity extends Activity
         }
 
         // Flip to the back.
-
         mShowingBack = true;
 
         // Create and commit a new fragment transaction that adds the fragment for the back of
@@ -237,23 +296,11 @@ public class CardFlipActivity extends Activity
 
                         // Commit the transaction.
                 .commit();
-
-        // Defer an invalidation of the options menu (on modern devices, the action bar). This
-        // can't be done immediately because the transaction may not yet be committed. Commits
-        // are asynchronous in that they are posted to the main thread's message loop.
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                invalidateOptionsMenu();
-            }
-        });
     }
 
     @Override
     public void onBackStackChanged() {
         mShowingBack = (getFragmentManager().getBackStackEntryCount() > 0);
-        // When the back stack changes, invalidate the options menu (action bar).
-        invalidateOptionsMenu();
     }
 
     /**

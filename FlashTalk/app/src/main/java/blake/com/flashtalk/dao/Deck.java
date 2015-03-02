@@ -3,6 +3,9 @@ package blake.com.flashtalk.dao;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Blake on 8/25/2014.
  */
@@ -66,6 +69,13 @@ public class Deck implements Parcelable {
 
     public void setHintLocale(String _hintLocale) {
         this._hintLocale = _hintLocale;
+    }
+
+    public List<Card> getCards() {
+        DatabaseHandler db = DatabaseHandler.getInstance(null);
+        List<Card> deckCards = db.getAllDeckCards(this.getId());
+        db.close();
+        return deckCards;
     }
 
     @Override

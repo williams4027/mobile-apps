@@ -15,20 +15,21 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="#0EBFE9"
-    android:padding="20dp" >
+    android:background="@drawable/flashtalk_elements_card2"
+    android:padding="20dp"
+    android:gravity="center">
 
     <TextView
         android:id="@+id/txtFrontCardHint"
         style="?android:textAppearanceLarge"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center_vertical"
-        android:textColor="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
         android:textStyle="bold"
-        android:text="Hint Text" />
+        android:text="Hint Text"
+        android:layout_gravity="center" />
 
 </LinearLayout>
