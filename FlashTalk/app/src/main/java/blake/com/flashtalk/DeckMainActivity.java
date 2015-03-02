@@ -52,26 +52,18 @@ public class DeckMainActivity extends Activity {
 
         updateCardList();
 
-//        btnAddCards = (ImageButton)findViewById(R.id.btnAddCards);
-//        btnAddCards.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent addCardIntent = new Intent(DeckMainActivity.this, AddCardActivity.class);
-//
-//                // Get the deck selected and attach
-//                addCardIntent.putExtra("SelectedDeck", selectedDeck);
-//                startActivity(addCardIntent);
-//            }
-//        });
-
         deckStats = (ImageButton)findViewById(R.id.btnDeckStats);
         deckStats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent statsIntent = new Intent(DeckMainActivity.this, DeckStatsActivity.class);
-                // Get the deck selected and attach
-                statsIntent.putExtra("SelectedDeck", selectedDeck);
-                startActivity(statsIntent);
+                if (currentCards.size() > 1) {
+                    Intent statsIntent = new Intent(DeckMainActivity.this, DeckStatsActivity.class);
+                    // Get the deck selected and attach
+                    statsIntent.putExtra("SelectedDeck", selectedDeck);
+                    startActivity(statsIntent);
+                } else {
+                    Toast.makeText(activityContext, "Please create a card and quiz first.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -121,21 +113,10 @@ public class DeckMainActivity extends Activity {
                     quizIntent.putExtra("SelectedDeck", selectedDeck);
                     startActivity(quizIntent);
                 } else {
-                    Toast.makeText(activityContext, "Please create a card before studying.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activityContext, "Please create a card first.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-//
-//        // Reading all contacts
-//        Log.d("DEBUG: DeckMain", "Reading all cards..");
-//        DatabaseHandler db = new DatabaseHandler(this);
-//        List<Card> cards = db.getAllDeckCards(selectedDeck.getId());
-//        for ( Card tempCard : cards ){
-//            Log.d("Card ID: ", String.valueOf(tempCard.getId()));
-//            Log.d("Card Deck ID: ", String.valueOf(tempCard.getHintString()));
-//            Log.d("Card Answer: ", tempCard.getAnswerString());
-//            Log.d("Card Hint: ", tempCard.getHintString());
-//        }
     }
 
     @Override

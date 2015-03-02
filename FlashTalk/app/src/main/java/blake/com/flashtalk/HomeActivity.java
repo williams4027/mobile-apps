@@ -53,74 +53,76 @@ public class HomeActivity extends Activity {
         }
 
         btnAddDeck = (ImageButton)findViewById(R.id.btnAddDeck);
-
         btnAddDeck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // custom dialog
-                final Dialog dialog = new Dialog(activityContext);
-                dialog.setContentView(R.layout.activity_add_deck);
-                dialog.setTitle("Enter Deck Name");
+                Intent deckEditIntent = new Intent(HomeActivity.this, EditDeckActivity.class);
+                startActivity(deckEditIntent);
 
-                Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-                final EditText txtNewDeckName = (EditText)dialog.findViewById(R.id.editTextDeckName);
-
-                final Spinner spinnerAnswerLocale = (Spinner)dialog.findViewById(R.id.spinnerAnswerLocaleList);
-                final Spinner spinnerHintLocale = (Spinner)dialog.findViewById(R.id.spinnerHintLocaleList);
-
-                List<LocaleSpinnerObject> spinnerList = new ArrayList<LocaleSpinnerObject>();
-                LocaleSpinnerObject defaultLocale = null;
-
-                for ( Locale tempLocale : Locale.getAvailableLocales() ){
-                    System.out.println(tempLocale.getDisplayLanguage());
-                    System.out.println(tempLocale.getDisplayName());
-                    System.out.println(tempLocale.getLanguage());
-                    LocaleSpinnerObject tempObject = new LocaleSpinnerObject(tempLocale.getDisplayName(), tempLocale);
-                    if ( tempLocale.equals(Locale.US)){
-                        defaultLocale = tempObject;
-                    }
-                    spinnerList.add(tempObject);
-                }
-
-                ArrayAdapter<LocaleSpinnerObject> dataAdapter = new ArrayAdapter<LocaleSpinnerObject>(activityContext,
-                        android.R.layout.simple_spinner_item, spinnerList);
-                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                int defaultIndex = dataAdapter.getPosition(defaultLocale);
-
-                spinnerAnswerLocale.setAdapter(dataAdapter);
-                spinnerAnswerLocale.setSelection(defaultIndex);
-
-                spinnerHintLocale.setAdapter(dataAdapter);
-                spinnerHintLocale.setSelection(defaultIndex);
-
-                // if button is clicked, close the custom dialog
-                dialogButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-
-
-                        /**
-                         * CRUD Operations
-                         * */
-                        // Inserting Contacts
-                        Log.d("Insert: ", "Inserting ..");
-                        if ( ((LocaleSpinnerObject)spinnerAnswerLocale.getSelectedItem()).getValue() != null &&
-                                ((LocaleSpinnerObject)spinnerHintLocale.getSelectedItem()).getValue() != null ) {
-                            final Deck newDeck = new Deck(txtNewDeckName.getText().toString(),
-                                    ((LocaleSpinnerObject) spinnerAnswerLocale.getSelectedItem()).getValue().toString(),
-                                    ((LocaleSpinnerObject) spinnerHintLocale.getSelectedItem()).getValue().toString());
-                            DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
-                            db.addDeck(newDeck);
-                            currentDecks.add(newDeck);
-                            deckAdapter.notifyDataSetChanged();
-                            db.close();
-                        }
-                    }
-                });
-
-                dialog.show();
+//                // custom dialog
+//                final Dialog dialog = new Dialog(activityContext);
+//                dialog.setContentView(R.layout.activity_add_deck);
+//                dialog.setTitle("Enter Deck Name");
+//
+//                Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
+//                final EditText txtNewDeckName = (EditText)dialog.findViewById(R.id.editTextDeckName);
+//
+//                final Spinner spinnerAnswerLocale = (Spinner)dialog.findViewById(R.id.spinnerAnswerLocaleList);
+//                final Spinner spinnerHintLocale = (Spinner)dialog.findViewById(R.id.spinnerHintLocaleList);
+//
+//                List<LocaleSpinnerObject> spinnerList = new ArrayList<LocaleSpinnerObject>();
+//                LocaleSpinnerObject defaultLocale = null;
+//
+//                for ( Locale tempLocale : Locale.getAvailableLocales() ){
+//                    System.out.println(tempLocale.getDisplayLanguage());
+//                    System.out.println(tempLocale.getDisplayName());
+//                    System.out.println(tempLocale.getLanguage());
+//                    LocaleSpinnerObject tempObject = new LocaleSpinnerObject(tempLocale.getDisplayName(), tempLocale);
+//                    if ( tempLocale.equals(Locale.US)){
+//                        defaultLocale = tempObject;
+//                    }
+//                    spinnerList.add(tempObject);
+//                }
+//
+//                ArrayAdapter<LocaleSpinnerObject> dataAdapter = new ArrayAdapter<LocaleSpinnerObject>(activityContext,
+//                        android.R.layout.simple_spinner_item, spinnerList);
+//                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                int defaultIndex = dataAdapter.getPosition(defaultLocale);
+//
+//                spinnerAnswerLocale.setAdapter(dataAdapter);
+//                spinnerAnswerLocale.setSelection(defaultIndex);
+//
+//                spinnerHintLocale.setAdapter(dataAdapter);
+//                spinnerHintLocale.setSelection(defaultIndex);
+//
+//                // if button is clicked, close the custom dialog
+//                dialogButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        dialog.dismiss();
+//
+//
+//                        /**
+//                         * CRUD Operations
+//                         * */
+//                        // Inserting Contacts
+//                        Log.d("Insert: ", "Inserting ..");
+//                        if ( ((LocaleSpinnerObject)spinnerAnswerLocale.getSelectedItem()).getValue() != null &&
+//                                ((LocaleSpinnerObject)spinnerHintLocale.getSelectedItem()).getValue() != null ) {
+//                            final Deck newDeck = new Deck(txtNewDeckName.getText().toString(),
+//                                    ((LocaleSpinnerObject) spinnerAnswerLocale.getSelectedItem()).getValue().toString(),
+//                                    ((LocaleSpinnerObject) spinnerHintLocale.getSelectedItem()).getValue().toString());
+//                            DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
+//                            db.addDeck(newDeck);
+//                            currentDecks.add(newDeck);
+//                            deckAdapter.notifyDataSetChanged();
+//                            db.close();
+//                        }
+//                    }
+//                });
+//
+//                dialog.show();
             }
         });
     }
@@ -159,39 +161,5 @@ public class HomeActivity extends Activity {
         });
 
         deckAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (v.getId()==R.id.deckList) {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-            menu.setHeaderTitle(currentDecks.get(info.position).getDeckName());
-            String[] menuItems = getResources().getStringArray(R.array.deck_menu);
-            for (int i = 0; i<menuItems.length; i++) {
-                menu.add(Menu.NONE, i, i, menuItems[i]);
-            }
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-        int menuItemIndex = item.getItemId();
-        switch (menuItemIndex){
-            case 0:
-                Log.d("DEBUG","Edit Selected");
-                break;
-            case 1:
-                Log.d("DEBUG","Delete Selected");
-                // Get the deck selected and delete
-                Deck selectedDeck = currentDecks.get(info.position);
-                DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
-                db.deleteDeck(selectedDeck);
-                currentDecks.remove(selectedDeck);
-                deckAdapter.notifyDataSetChanged();
-                db.close();
-                break;
-        }
-        return true;
     }
 }

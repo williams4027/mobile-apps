@@ -18,7 +18,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     // Database Name
     private static final String DATABASE_NAME = "FlashTalk";
@@ -63,19 +63,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String CREATE_DECK_TABLE = "CREATE TABLE " + TABLE_DECKS + "("
-                + DECK_KEY_ID + " INTEGER PRIMARY KEY," + DECK_KEY_DECK_NAME + " TEXT,"
+                + DECK_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + DECK_KEY_DECK_NAME + " TEXT,"
                 + DECK_KEY_ANSWER_LOCALE + " TEXT,"
                 + DECK_KEY_HINT_LOCALE + " TEXT" + ")";
         sqLiteDatabase.execSQL(CREATE_DECK_TABLE);
 
         String CREATE_CARD_TABLE = "CREATE TABLE " + TABLE_CARDS + "("
-                + CARD_KEY_ID + " INTEGER PRIMARY KEY," + CARD_DECK_ID + " INTEGER,"
+                + CARD_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CARD_DECK_ID + " INTEGER,"
                 + CARD_KEY_ANSWER_STRING + " TEXT,"
                 + CARD_KEY_HINT_STRING + " TEXT" + ")";
         sqLiteDatabase.execSQL(CREATE_CARD_TABLE);
 
         String CREATE_CARD_STATS_TABLE = "CREATE TABLE " + TABLE_CARD_STATISTICS + "("
-                + CARD_STAT_KEY_ID + " INTEGER PRIMARY KEY," + CARD_STAT_CARD_ID + " INTEGER,"
+                + CARD_STAT_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CARD_STAT_CARD_ID + " INTEGER,"
                 + CARD_STAT_FLAGGED + " INTEGER,"
                 + CARD_STAT_CORRECT_COUNT + " INTEGER,"
                 + CARD_STAT_INCORRECT_COUNT + " INTEGER,"
@@ -166,6 +166,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Deleting single deck
     public void deleteDeck(Deck deck) {
+        for(Card card : getAllDeckCards(deck.getId())){
+            deleteCard(card);
+        }
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_DECKS, DECK_KEY_ID + " = ?",
                 new String[] { String.valueOf(deck.getId()) });
@@ -220,6 +223,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Deleting single card
     public void deleteCard(Card card) {
+        deleteCardStatistic(card.getCardStatistic());
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_CARDS, CARD_KEY_ID + " = ?",
                 new String[] { String.valueOf(card.getId()) });

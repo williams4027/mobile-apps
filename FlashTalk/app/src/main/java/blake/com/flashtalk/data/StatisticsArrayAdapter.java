@@ -59,7 +59,7 @@ public class StatisticsArrayAdapter extends ArrayAdapter<Card> {
         if (correctPercentage < 70){
             Drawable background = this.context.getResources().getDrawable(R.drawable.flashtalk_elements_transparentbox);
             background.setBounds(row.getLeft(), row.getTop(), row.getRight(), row.getBottom());
-            row.setBackgroundColor(Color.parseColor("#35FFFFFF"));
+            row.setBackgroundColor(this.context.getResources().getColor(R.color.translucent));
         }
 
         return row;

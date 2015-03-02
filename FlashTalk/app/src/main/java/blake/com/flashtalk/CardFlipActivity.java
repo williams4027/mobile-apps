@@ -122,6 +122,7 @@ public class CardFlipActivity extends Activity
                 currentCard.getCardStatistic().set_correctCount(correctCount + 1);
                 currentCard.updateCardStatistic();
                 if ( changeCurrentCard(true) ) {
+                    getFragmentManager().beginTransaction().remove(cardFrontFragment).commit();
                     cardFrontFragment = new CardFrontFragment();
                     Bundle args = new Bundle();
                     args.putString("FrontHint", currentCard.getHintString());
@@ -165,14 +166,10 @@ public class CardFlipActivity extends Activity
     }
 
     private boolean changeCurrentCard(boolean correctAnswer){
-        if ( currentCard != null && currentCards != null ){
-            if (correctAnswer) {
-                ProgressBar deckProgress = (ProgressBar) findViewById(R.id.deckProgressBar);
-                deckProgress.incrementProgressBy(1);
-                currentCards.remove(currentCard);
-            }
-            getFragmentManager().beginTransaction().remove(cardFrontFragment).commit();
-            flipCard();
+        if (correctAnswer) {
+            ProgressBar deckProgress = (ProgressBar) findViewById(R.id.deckProgressBar);
+            deckProgress.incrementProgressBy(1);
+            currentCards.remove(currentCard);
         }
         if ( currentCards != null && currentCards.size() > 0 ){
             Random randGen = new Random(System.currentTimeMillis());
