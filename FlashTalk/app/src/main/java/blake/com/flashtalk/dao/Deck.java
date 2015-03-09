@@ -6,9 +6,6 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Blake on 8/25/2014.
- */
 public class Deck implements Parcelable {
     long _id;
     String _deckName;

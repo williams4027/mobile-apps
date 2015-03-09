@@ -3,9 +3,6 @@ package blake.com.flashtalk.dao;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Blake on 8/25/2014.
- */
 public class Card implements Parcelable {
     long _id;
     long _deckId;

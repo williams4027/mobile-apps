@@ -9,9 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Blake on 8/25/2014.
- */
 public class DatabaseHandler extends SQLiteOpenHelper {
     private static DatabaseHandler instance = null;
     private Context context;
