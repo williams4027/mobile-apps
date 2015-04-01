@@ -28,7 +28,7 @@ public class DeckMainActivity extends Activity {
 
     private ImageButton deckStats;
     private ImageButton deleteDeckButton;
-
+    private ImageButton btnExportDeck;
     private ImageButton btnQuiz;
 
     private Deck selectedDeck;
@@ -100,6 +100,18 @@ public class DeckMainActivity extends Activity {
 
                 // Showing Alert Message
                 alertDialog.show();
+            }
+        });
+
+        btnExportDeck = (ImageButton)findViewById((R.id.btnExportDeck));
+        btnExportDeck.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (currentCards.size() > 1){
+                    Intent exportIntent = new Intent(DeckMainActivity.this, ExportDeckActivity.class);
+                    exportIntent.putExtra("SelectedDeck", selectedDeck);
+                    startActivity(exportIntent);
+                }
             }
         });
 

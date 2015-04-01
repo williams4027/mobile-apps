@@ -51,7 +51,6 @@ public class EditDeckActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_deck);
-
         selectedDeck = getIntent().getParcelableExtra("SelectedDeck");
         if (selectedDeck == null){
             selectedDeck = new Deck();

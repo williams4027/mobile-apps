@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="blake.com.flashtalk" >
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/flashtalk_logo_lg"
@@ -45,6 +47,12 @@
             android:name=".CardFlipActivity"
             android:label="@string/title_activity_card_flip" >
         </activity>
+        <activity
+            android:name=".ExportDeckActivity"
+            android:label="Export Deck" >
+        </activity>
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
