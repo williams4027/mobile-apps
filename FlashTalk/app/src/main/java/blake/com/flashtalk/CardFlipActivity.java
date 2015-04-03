@@ -20,12 +20,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -103,6 +100,7 @@ public class CardFlipActivity extends Activity
                 if (currentCard != null) {
                     args.putString("FrontHint", currentCard.getHintString());
                     cardFrontFragment.setArguments(args);
+                    getFragmentManager().popBackStack();
                     getFragmentManager()
                             .beginTransaction()
                             .add(R.id.cardContainer, cardFrontFragment)
@@ -127,6 +125,7 @@ public class CardFlipActivity extends Activity
                     Bundle args = new Bundle();
                     args.putString("FrontHint", currentCard.getHintString());
                     cardFrontFragment.setArguments(args);
+                    getFragmentManager().popBackStack();
                     getFragmentManager()
                             .beginTransaction()
                             .replace(R.id.cardContainer, cardFrontFragment)
@@ -151,6 +150,7 @@ public class CardFlipActivity extends Activity
                     Bundle args = new Bundle();
                     args.putString("FrontHint", currentCard.getHintString());
                     cardFrontFragment.setArguments(args);
+                    getFragmentManager().popBackStack();
                     getFragmentManager()
                             .beginTransaction()
                             .replace(R.id.cardContainer, cardFrontFragment)
