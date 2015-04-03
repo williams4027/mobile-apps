@@ -129,12 +129,16 @@ public class DeckMainActivity extends Activity {
                 }
             }
         });
+
+        Log.d("LIFECYCLE DEBUG:", "Deck Main Activity: In On Create");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         updateCardList();
+
+        Log.d("LIFECYCLE DEBUG:", "Deck Main Activity: In On Resume");
     }
 
     private void updateCardList() {
@@ -169,5 +173,12 @@ public class DeckMainActivity extends Activity {
                 startActivity(cardEditIntent);
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Log.d("LIFECYCLE DEBUG:", "Deck Main Activity: In On Stop");
     }
 }

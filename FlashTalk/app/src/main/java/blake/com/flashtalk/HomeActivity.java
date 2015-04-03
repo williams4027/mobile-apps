@@ -61,12 +61,16 @@ public class HomeActivity extends Activity {
                 startActivity(deckEditIntent);
             }
         });
+
+        Log.d("LIFECYCLE DEBUG:", "Home Activity: In On Stop");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         updateDeckList();
+
+        Log.d("LIFECYCLE DEBUG:", "Home Activity: In On Resume");
     }
 
     private void updateDeckList() {
@@ -98,4 +102,13 @@ public class HomeActivity extends Activity {
 
         deckAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Log.d("LIFECYCLE DEBUG:", "Home Activity: In On Stop");
+    }
+
+
 }

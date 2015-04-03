@@ -128,5 +128,19 @@ public class EditDeckActivity extends Activity {
                 }
             }
         });
+
+        Log.d("LIFECYCLE DEBUG:", "Edit Deck Activity: In On Create");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("LIFECYCLE DEBUG:", "Edit Deck Activity: In On Resume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("LIFECYCLE DEBUG:", "Edit Deck Activity: In On Pause");
     }
 }
