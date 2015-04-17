@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -47,14 +46,15 @@ public class DeckStatsActivity extends Activity {
 
         updateStatList();
 
-        toggleFlaggedCardButton = (ImageButton)findViewById(R.id.btnToggleFlagged);
-        toggleFlaggedCardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                flaggedOnly = !flaggedOnly;
-                updateStatList();
-            }
-        });
+        // TODO: Implement flagged cards in the future, supporting when studying
+        //       toggleFlaggedCardButton = (ImageButton)findViewById(R.id.btnToggleFlagged);
+        //        toggleFlaggedCardButton.setOnClickListener(new View.OnClickListener() {
+        //            @Override
+        //            public void onClick(View view) {
+        //                flaggedOnly = !flaggedOnly;
+        //                updateStatList();
+        //            }
+        //        });
     }
 
     @Override
