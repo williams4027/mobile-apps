@@ -1,0 +1,92 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="?android:attr/actionBarSize"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/flashtalk_flats_backgrounds_04"
+    tools:context="blake.com.flashtalk.CardFlipActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/quizTitle"
+        android:id="@+id/labelStudyOverview"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true" />
+
+    <View style="@style/Divider"
+        android:id="@+id/labelDivider"
+        android:layout_below="@+id/labelStudyOverview"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/containerLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:weightSum="1"
+        android:layout_below="@+id/labelDivider"
+        android:layout_above="@+id/deckProgressBar">
+
+        <FrameLayout
+            android:id="@+id/cardContainer"
+            android:layout_width="291dp"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_weight="0.70"
+            android:layout_gravity="center_horizontal" />
+
+
+        <LinearLayout
+            android:id="@+id/studyActionPanel"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_weight="0.30"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/correctAnswerButton"
+                android:src="@drawable/flashtalk_elements_check"
+                android:scaleType="centerInside"
+                android:background="@android:color/transparent"
+                android:layout_marginBottom="20dp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/incorrectAnswerButton"
+                android:src="@drawable/flashtalk_elements_x"
+                android:scaleType="centerInside"
+                android:background="@android:color/transparent"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:id="@+id/deckProgressBar"
+        android:indeterminate="false"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/labelDivider"
+        android:layout_alignStart="@+id/labelDivider" />
+</RelativeLayout>

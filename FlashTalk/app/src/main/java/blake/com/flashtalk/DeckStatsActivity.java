@@ -100,7 +100,7 @@ public class DeckStatsActivity extends Activity {
                 int itemPosition = position;
                 Card selectedCard = (Card) cardListView.getItemAtPosition(itemPosition);
                 cardEditIntent.putExtra("SelectedDeck", selectedDeck);
-                cardEditIntent.putExtra("SelectedCard", selectedCard);
+                cardEditIntent.putExtra("SelectedCard", (android.os.Parcelable) selectedCard);
                 startActivity(cardEditIntent);
             }
         });
