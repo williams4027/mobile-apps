@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ public class DeckStatsActivity extends Activity {
     private StatisticsArrayAdapter cardAdapter;
 
     private boolean flaggedOnly = false;
-    private ImageButton toggleFlaggedCardButton;
+    //private ImageButton toggleFlaggedCardButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
