@@ -31,7 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 
 import blake.com.flashtalk.dao.Card;
@@ -39,12 +39,10 @@ import blake.com.flashtalk.dao.DatabaseHandler;
 import blake.com.flashtalk.dao.Deck;
 
 /**
- * Demonstrates a "card-flip" animation using custom fragment transactions ({@link
- * android.app.FragmentTransaction#setCustomAnimations(int, int)}).
- *
- * <p>This sample shows an "info" action bar button that shows the back of a "card", rotating the
- * front of the card out and the back of the card in. The reverse animation is played when the user
- * presses the system Back button or the "photo" action bar button.</p>
+ * Demonstrates a "card-flip" animation using custom fragment transactions when the user
+ * taps the card to see the opposite side (hint/answer). Then the user can mark the card as
+ * correctly identified or not, which will be logged in the card's stats. A new card will then
+ * be populated until the whole deck has been finished.
  */
 public class CardFlipActivity extends Activity
         implements FragmentManager.OnBackStackChangedListener {
@@ -60,7 +58,7 @@ public class CardFlipActivity extends Activity
 
     Context activityContext = this;
 
-    private List<Card> currentCards;
+    private ArrayList<Card> currentCards;
     private Card currentCard;
 
     private CardFrontFragment cardFrontFragment;
@@ -72,12 +70,20 @@ public class CardFlipActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_flip);
 
-        // Grab all the cards to test
-        Deck selectedDeck = getIntent().getParcelableExtra("SelectedDeck");
-        DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
-        db.getAllCards();
-        currentCards = db.getAllDeckCards(selectedDeck.getId());
-        db.close();
+        // Create new deck starting position
+        if (savedInstanceState == null) {
+            // Grab all the cards to test
+            Deck selectedDeck = getIntent().getParcelableExtra("SelectedDeck");
+            DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
+            db.getAllCards();
+            currentCards = (ArrayList<Card>) db.getAllDeckCards(selectedDeck.getId());
+            db.close();
+        }
+        // Load past status (screen rotation/app pause)
+        else {
+            currentCard = (Card) savedInstanceState.getSerializable("currentCard");
+            currentCards = savedInstanceState.getParcelableArrayList("currentCards");
+        }
 
         // Set Progress Bar max value
         ProgressBar deckProgress = (ProgressBar)findViewById(R.id.deckProgressBar);
@@ -93,17 +99,18 @@ public class CardFlipActivity extends Activity
                     flipCard();
                 }
             });
-
             if (savedInstanceState == null) {
                 cardFrontFragment = new CardFrontFragment();
                 Bundle args = new Bundle();
+
+                // Next card is not null, so set the front card fragment to the hint
                 if (currentCard != null) {
                     args.putString("FrontHint", currentCard.getHintString());
                     cardFrontFragment.setArguments(args);
                     getFragmentManager().popBackStack();
                     getFragmentManager()
                             .beginTransaction()
-                            .add(R.id.cardContainer, cardFrontFragment)
+                            .add(R.id.cardContainer, cardFrontFragment,"frontCardFragment")
                             .commit();
                 }
             } else {
@@ -120,7 +127,7 @@ public class CardFlipActivity extends Activity
                 currentCard.getCardStatistic().set_correctCount(correctCount + 1);
                 currentCard.updateCardStatistic();
                 if ( changeCurrentCard(true) ) {
-                    getFragmentManager().beginTransaction().remove(cardFrontFragment).commit();
+                    getFragmentManager().popBackStack();
                     cardFrontFragment = new CardFrontFragment();
                     Bundle args = new Bundle();
                     args.putString("FrontHint", currentCard.getHintString());
@@ -128,7 +135,7 @@ public class CardFlipActivity extends Activity
                     getFragmentManager().popBackStack();
                     getFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.cardContainer, cardFrontFragment)
+                            .replace(R.id.cardContainer, cardFrontFragment, "frontCardFragment")
                             .commit();
                 } else {
                     Toast.makeText(getApplicationContext(), "Congrats! Deck finished!", Toast.LENGTH_SHORT).show();
@@ -153,7 +160,7 @@ public class CardFlipActivity extends Activity
                     getFragmentManager().popBackStack();
                     getFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.cardContainer, cardFrontFragment)
+                            .replace(R.id.cardContainer, cardFrontFragment, "frontCardFragment")
                             .commit();
                 } else {
                     Toast.makeText(getApplicationContext(), "Congrats! Deck finished!", Toast.LENGTH_SHORT).show();
@@ -166,94 +173,24 @@ public class CardFlipActivity extends Activity
     }
 
     private boolean changeCurrentCard(boolean correctAnswer){
+
+        // Increase progress bar value, and remove the card from the temp deck
         if (correctAnswer) {
             ProgressBar deckProgress = (ProgressBar) findViewById(R.id.deckProgressBar);
             deckProgress.incrementProgressBy(1);
             currentCards.remove(currentCard);
         }
+        // If there are more cards to go through, randomly pick one
         if ( currentCards != null && currentCards.size() > 0 ){
             Random randGen = new Random(System.currentTimeMillis());
             int cardIndex = randGen.nextInt(currentCards.size());
             currentCard = currentCards.get(cardIndex);
             return true;
         }
+
+        // No more cards remain, so return false
         return false;
     }
-
- /*   @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        // Add either a "photo" or "finish" button to the action bar, depending on which page
-        // is currently selected.
-        if (mShowingBack) {
-            MenuItem correctItem = menu.add(Menu.NONE, R.id.correctAnswerButton, Menu.NONE, mShowingBack ? "Hint" : "Answer");
-            correctItem.setIcon(R.drawable.checkmark_dw);
-            correctItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-            MenuItem wrongItem = menu.add(Menu.NONE, R.id.action_wrong, Menu.NONE, mShowingBack ? "Hint" : "Answer");
-            wrongItem.setIcon(R.drawable.x_dw);
-            wrongItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.correctAnswerButton:
-                long correctCount = currentCard.getCardStatistic().get_correctCount();
-                currentCard.getCardStatistic().set_correctCount(correctCount + 1);
-                currentCard.updateCardStatistic();
-                boolean cardsLeft = changeCurrentCard(true);
-                if ( cardsLeft ) {
-                    cardFrontFragment = new CardFrontFragment();
-                    Bundle args = new Bundle();
-                    args.putString("FrontHint", currentCard.getHintString());
-                    cardFrontFragment.setArguments(args);
-                    getFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.cardContainer, cardFrontFragment)
-                            .commit();
-                    return true;
-                } else {
-                    Intent deckMainIntent = new Intent(CardFlipActivity.this, DeckMainActivity.class);
-
-                    // Get the deck selected and attach
-                    deckMainIntent.putExtra("SelectedDeck", getIntent().getParcelableExtra("SelectedDeck"));
-                    startActivity(deckMainIntent);
-                    Toast.makeText(getApplicationContext(), "Congrats! Deck finished!", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                break;
-            case R.id.action_wrong:
-                long incorrectCount = currentCard.getCardStatistic().get_incorrectCount();
-                currentCard.getCardStatistic().set_incorrectCount(incorrectCount + 1);
-                currentCard.updateCardStatistic();
-                cardsLeft = changeCurrentCard(false);
-                if ( cardsLeft ) {
-                    cardFrontFragment = new CardFrontFragment();
-                    Bundle args = new Bundle();
-                    args.putString("FrontHint", currentCard.getHintString());
-                    cardFrontFragment.setArguments(args);
-                    getFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.cardContainer, cardFrontFragment)
-                            .commit();
-                    return true;
-                } else {
-                    Intent deckMainIntent = new Intent(CardFlipActivity.this, DeckMainActivity.class);
-
-                    // Get the deck selected and attach
-                    deckMainIntent.putExtra("SelectedDeck", getIntent().getParcelableExtra("SelectedDeck"));
-                    startActivity(deckMainIntent);
-                    Toast.makeText(getApplicationContext(), "Congrats! Deck finished!", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 
     private void flipCard() {
         if (mShowingBack) {
@@ -285,7 +222,7 @@ public class CardFlipActivity extends Activity
                         // Replace any fragments currently in the container view with a fragment
                         // representing the next page (indicated by the just-incremented currentPage
                         // variable).
-                .replace(R.id.cardContainer, cardBackFragment)
+                .replace(R.id.cardContainer, cardBackFragment, "backCardFragment")
 
                         // Add this transaction to the back stack, allowing users to press Back
                         // to get to the front of the card.
@@ -300,12 +237,23 @@ public class CardFlipActivity extends Activity
         mShowingBack = (getFragmentManager().getBackStackEntryCount() > 0);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        // Take the current variables and save them to the bundle
+        state.putSerializable("currentCard", currentCard);
+        state.putParcelableArrayList("currentCards", currentCards);
+    }
+
     /**
      * A fragment representing the front of the card.
      */
     public static class CardFrontFragment extends Fragment {
 
-        public CardFrontFragment(){}
+        public CardFrontFragment(){
+            setRetainInstance(true);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -323,7 +271,9 @@ public class CardFlipActivity extends Activity
      * A fragment representing the back of the card.
      */
     public static class CardBackFragment extends Fragment {
-        public CardBackFragment() {}
+        public CardBackFragment() {
+            setRetainInstance(true);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,

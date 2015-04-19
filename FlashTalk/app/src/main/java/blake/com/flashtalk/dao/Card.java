@@ -3,7 +3,9 @@ package blake.com.flashtalk.dao;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Card implements Parcelable {
+import java.io.Serializable;
+
+public class Card implements Parcelable, Serializable {
     long _id;
     long _deckId;
     String _answerString;

@@ -168,7 +168,7 @@ public class DeckMainActivity extends Activity {
                 Card selectedCard = (Card) cardListView.getItemAtPosition(itemPosition);
                 cardEditIntent.putExtra("SelectedDeck", selectedDeck);
                 if (selectedCard !=  createCardPlaceholder) {
-                    cardEditIntent.putExtra("SelectedCard", selectedCard);
+                    cardEditIntent.putExtra("SelectedCard", (android.os.Parcelable) selectedCard);
                 }
                 startActivity(cardEditIntent);
             }

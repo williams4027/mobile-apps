@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -30,7 +28,7 @@ public class DeckStatsActivity extends Activity {
     private StatisticsArrayAdapter cardAdapter;
 
     private boolean flaggedOnly = false;
-    private ImageButton toggleFlaggedCardButton;
+    //private ImageButton toggleFlaggedCardButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +45,15 @@ public class DeckStatsActivity extends Activity {
 
         updateStatList();
 
-        toggleFlaggedCardButton = (ImageButton)findViewById(R.id.btnToggleFlagged);
-        toggleFlaggedCardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                flaggedOnly = !flaggedOnly;
-                updateStatList();
-            }
-        });
+        // TODO: Implement flagged cards in the future, supporting when studying
+        //       toggleFlaggedCardButton = (ImageButton)findViewById(R.id.btnToggleFlagged);
+        //        toggleFlaggedCardButton.setOnClickListener(new View.OnClickListener() {
+        //            @Override
+        //            public void onClick(View view) {
+        //                flaggedOnly = !flaggedOnly;
+        //                updateStatList();
+        //            }
+        //        });
     }
 
     @Override
@@ -100,7 +99,7 @@ public class DeckStatsActivity extends Activity {
                 int itemPosition = position;
                 Card selectedCard = (Card) cardListView.getItemAtPosition(itemPosition);
                 cardEditIntent.putExtra("SelectedDeck", selectedDeck);
-                cardEditIntent.putExtra("SelectedCard", selectedCard);
+                cardEditIntent.putExtra("SelectedCard", (android.os.Parcelable) selectedCard);
                 startActivity(cardEditIntent);
             }
         });
