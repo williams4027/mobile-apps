@@ -66,6 +66,7 @@ public class EditCardActivity extends Activity {
             labelHint.setText("Hint: " + displayHintLabel);
         }
 
+        // Set microphone buttons to create the correct speech to text intent when clicked
         btnAnswerSpeak.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -73,7 +74,6 @@ public class EditCardActivity extends Activity {
                 generateLanguageIntent(deck.getAnswerLocale(), ANSWER_RESULT_SPEECH, txtAnswerResult);
             }
         });
-
         btnHintSpeak.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -103,10 +103,6 @@ public class EditCardActivity extends Activity {
                     selectedCard = new Card(deck.getId(), txtAnswerResult.getText().toString(), txtHintResult.getText().toString());
                     db.addCard(selectedCard);
                     db.close();
-
-//                    Toast.makeText(getApplicationContext(), "Card Saved", Toast.LENGTH_SHORT).show();
-//                    txtAnswerResult.setText(null);
-//                    txtHintResult.setText(null);
                 }
                 finish();
             }
@@ -150,11 +146,11 @@ public class EditCardActivity extends Activity {
             }
         });
 
-        // Reading all contacts
+        // Reading all cards
         DatabaseHandler db = DatabaseHandler.getInstance(activityContext);
         List<Card> currentCards = db.getAllCards();
         db.close();
-        Log.d("Reading: ", "Reading all contacts..");
+        Log.d("Reading: ", "Reading all cards..");
         for ( Card tempCard : currentCards ){
             Log.d("CARD: ", tempCard.getId() + tempCard.getDeckId() + tempCard.getAnswerString() + tempCard.getHintString());
         }
@@ -173,7 +169,7 @@ public class EditCardActivity extends Activity {
                 txtOutput.setText("");
             } catch (ActivityNotFoundException a) {
                 Toast t = Toast.makeText(getApplicationContext(),
-                        "Opps! Your device doesn't support Speech to Text",
+                        "Oops! Your device doesn't support Speech to Text",
                         Toast.LENGTH_SHORT);
                 t.show();
             }
@@ -185,22 +181,11 @@ public class EditCardActivity extends Activity {
         }
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Assign the text produced to the hint or answer according to the button pressed
         switch (requestCode) {
             case ANSWER_RESULT_SPEECH: {
                 if (resultCode == RESULT_OK && null != data) {

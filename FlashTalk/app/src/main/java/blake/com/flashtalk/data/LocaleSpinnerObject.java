@@ -2,6 +2,9 @@ package blake.com.flashtalk.data;
 
 import java.util.Locale;
 
+/**
+ * Used in the Create Deck activity to choose the languages for hints and answers.
+ */
 public class LocaleSpinnerObject {
     private String displayLocale;
     private Locale valueLocale;

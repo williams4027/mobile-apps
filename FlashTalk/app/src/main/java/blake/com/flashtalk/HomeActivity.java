@@ -1,30 +1,20 @@
 package blake.com.flashtalk;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Spinner;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import blake.com.flashtalk.dao.DatabaseHandler;
 import blake.com.flashtalk.dao.Deck;
-import blake.com.flashtalk.data.LocaleSpinnerObject;
 
 
 public class HomeActivity extends Activity {
@@ -106,7 +96,6 @@ public class HomeActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-
         Log.d("LIFECYCLE DEBUG:", "Home Activity: In On Stop");
     }
 

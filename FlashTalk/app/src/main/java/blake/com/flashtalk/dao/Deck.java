@@ -3,7 +3,6 @@ package blake.com.flashtalk.dao;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Deck implements Parcelable {
@@ -88,7 +87,7 @@ public class Deck implements Parcelable {
     public static final Parcelable.Creator<Deck> CREATOR= new Parcelable.Creator<Deck>() {
         @Override
         public Deck createFromParcel(Parcel source) {
-            return new Deck(source);  //using parcelable constructor
+            return new Deck(source);
         }
 
         @Override

@@ -2,7 +2,6 @@ package blake.com.flashtalk.data;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,11 @@ import blake.com.flashtalk.R;
 import blake.com.flashtalk.dao.Card;
 import blake.com.flashtalk.dao.CardStatistic;
 
+/**
+ * Specialized adapter to display statistics in a table, organized from
+ * lowest correct percentage to highest, also displaying the statistical
+ * percentage to the right of the card hint label.
+ */
 public class StatisticsArrayAdapter extends ArrayAdapter<Card> {
     Context context;
     int layoutResourceId;
@@ -33,11 +37,13 @@ public class StatisticsArrayAdapter extends ArrayAdapter<Card> {
         View row = convertView;
         StatHolder holder = null;
 
+        // Create the row if it is null
         if(row == null)
         {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId, parent, false);
 
+            // Grab the answer and percentage locations in the row data holder
             holder = new StatHolder();
             holder.cardAnswer = (TextView)row.findViewById(R.id.statCardAnswer);
             holder.correctPercentage = (TextView)row.findViewById(R.id.statCardPercentage);
@@ -49,13 +55,16 @@ public class StatisticsArrayAdapter extends ArrayAdapter<Card> {
             holder = (StatHolder)row.getTag();
         }
 
+        // Assign the card answer label
         Card card = data.get(position);
         holder.cardAnswer.setText(card.getDisplayAnswer());
 
+        // Assign the card percentage correct
         CardStatistic cardStatistic = card.getCardStatistic();
         double correctPercentage = StatisticsArrayAdapter.calculateCardStatistics(cardStatistic);
         holder.correctPercentage.setText(String.format("%.2f", correctPercentage) + "%");
 
+        // Highlight the card if it has a percentage that is less than an acceptable amount for later studying
         if (correctPercentage < 70){
             Drawable background = this.context.getResources().getDrawable(R.drawable.flashtalk_elements_transparentbox);
             background.setBounds(row.getLeft(), row.getTop(), row.getRight(), row.getBottom());

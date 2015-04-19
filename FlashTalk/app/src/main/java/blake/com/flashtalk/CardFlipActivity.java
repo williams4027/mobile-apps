@@ -39,12 +39,10 @@ import blake.com.flashtalk.dao.DatabaseHandler;
 import blake.com.flashtalk.dao.Deck;
 
 /**
- * Demonstrates a "card-flip" animation using custom fragment transactions ({@link
- * android.app.FragmentTransaction#setCustomAnimations(int, int)}).
- *
- * <p>This sample shows an "info" action bar button that shows the back of a "card", rotating the
- * front of the card out and the back of the card in. The reverse animation is played when the user
- * presses the system Back button or the "photo" action bar button.</p>
+ * Demonstrates a "card-flip" animation using custom fragment transactions when the user
+ * taps the card to see the opposite side (hint/answer). Then the user can mark the card as
+ * correctly identified or not, which will be logged in the card's stats. A new card will then
+ * be populated until the whole deck has been finished.
  */
 public class CardFlipActivity extends Activity
         implements FragmentManager.OnBackStackChangedListener {
@@ -72,6 +70,7 @@ public class CardFlipActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_flip);
 
+        // Create new deck starting position
         if (savedInstanceState == null) {
             // Grab all the cards to test
             Deck selectedDeck = getIntent().getParcelableExtra("SelectedDeck");
@@ -79,7 +78,9 @@ public class CardFlipActivity extends Activity
             db.getAllCards();
             currentCards = (ArrayList<Card>) db.getAllDeckCards(selectedDeck.getId());
             db.close();
-        } else {
+        }
+        // Load past status (screen rotation/app pause)
+        else {
             currentCard = (Card) savedInstanceState.getSerializable("currentCard");
             currentCards = savedInstanceState.getParcelableArrayList("currentCards");
         }
@@ -98,9 +99,11 @@ public class CardFlipActivity extends Activity
                     flipCard();
                 }
             });
-           if (savedInstanceState == null) {
+            if (savedInstanceState == null) {
                 cardFrontFragment = new CardFrontFragment();
                 Bundle args = new Bundle();
+
+                // Next card is not null, so set the front card fragment to the hint
                 if (currentCard != null) {
                     args.putString("FrontHint", currentCard.getHintString());
                     cardFrontFragment.setArguments(args);
@@ -170,17 +173,22 @@ public class CardFlipActivity extends Activity
     }
 
     private boolean changeCurrentCard(boolean correctAnswer){
+
+        // Increase progress bar value, and remove the card from the temp deck
         if (correctAnswer) {
             ProgressBar deckProgress = (ProgressBar) findViewById(R.id.deckProgressBar);
             deckProgress.incrementProgressBy(1);
             currentCards.remove(currentCard);
         }
+        // If there are more cards to go through, randomly pick one
         if ( currentCards != null && currentCards.size() > 0 ){
             Random randGen = new Random(System.currentTimeMillis());
             int cardIndex = randGen.nextInt(currentCards.size());
             currentCard = currentCards.get(cardIndex);
             return true;
         }
+
+        // No more cards remain, so return false
         return false;
     }
 
@@ -232,6 +240,8 @@ public class CardFlipActivity extends Activity
     @Override
     protected void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
+
+        // Take the current variables and save them to the bundle
         state.putSerializable("currentCard", currentCard);
         state.putParcelableArrayList("currentCards", currentCards);
     }

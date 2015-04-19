@@ -1,26 +1,16 @@
 package blake.com.flashtalk;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
-
-import org.apache.commons.lang3.LocaleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,9 +57,6 @@ public class EditDeckActivity extends Activity {
         LocaleSpinnerObject defaultAnswerLocale =null;
         LocaleSpinnerObject defaultHintLocale = null;
         for ( Locale tempLocale : Locale.getAvailableLocales() ){
-//            System.out.println(tempLocale.getDisplayLanguage());
-//            System.out.println(tempLocale.getDisplayName());
-//            System.out.println(tempLocale.getLanguage());
             LocaleSpinnerObject tempObject = new LocaleSpinnerObject(tempLocale.getDisplayName(), tempLocale);
             if (tempLocale.equals(Locale.US)){
                 defaultLocale = tempObject;
@@ -116,6 +103,7 @@ public class EditDeckActivity extends Activity {
                 if ( selectedAnswerLocale != null &&
                         selectedHintLocale != null ) {
 
+                    // Persist the new deck to the database
                     final Deck newDeck = new Deck(txtNewDeckName.getText().toString(),
                             selectedAnswerLocale.getValue().toString(),
                             selectedHintLocale.getValue().toString());

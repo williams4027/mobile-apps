@@ -147,19 +147,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return deckList;
     }
-//
-//    // Updating single deck
-//    public int updateContact(Contact contact) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//
-//        ContentValues values = new ContentValues();
-//        values.put(KEY_NAME, contact.getName());
-//        values.put(KEY_PH_NO, contact.getPhoneNumber());
-//
-//        // updating row
-//        return db.update(TABLE_CONTACTS, values, DECK_KEY_ID + " = ?",
-//                new String[] { String.valueOf(contact.getID()) });
-//    }
 
     // Deleting single deck
     public void deleteDeck(Deck deck) {
@@ -171,18 +158,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[] { String.valueOf(deck.getId()) });
         db.close();
     }
-
-//
-//    // Getting contacts Count
-//    public int getContactsCount() {
-//        String countQuery = "SELECT  * FROM " + TABLE_CONTACTS;
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(countQuery, null);
-//        cursor.close();
-//
-//        // return count
-//        return cursor.getCount();
-//    }
 
     /**
      * All Card CRUD(Create, Read, Update, Delete) Operations
