@@ -8,9 +8,13 @@
     </facet>
   </component>
 <<<<<<< HEAD
+<<<<<<< HEAD
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/build/classes/main" />
     <output-test url="file://$MODULE_DIR$/build/classes/test" />
+=======
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+>>>>>>> origin/master
 =======
   <component name="NewModuleRootManager" inherit-compiler-output="true">
 >>>>>>> origin/master
